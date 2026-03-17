@@ -80,6 +80,13 @@ ssh daniel@100.89.11.76 'test -f /var/www/sites/tsa-monster/sitemap-0.xml && ech
 - VPS deploy target: `/var/www/sites/tsa-monster/` (already exists, daniel-owned)
 - Constraint: `/etc/caddy/sites/` does not exist yet — requires one-time user-interactive sudo to create
 
+## Observability Impact
+
+- **New inspectable state:** `/etc/caddy/sites/` directory exists on VPS — `stat -c "%U:%G %n" /etc/caddy/sites` returns `daniel:daniel /etc/caddy/sites`; absence means T01 is incomplete and T02 will fail on file-write
+- **File presence signal:** `find /var/www/sites/tsa-monster -name "index.html" | wc -l` returns 25 after transfer; fewer means rsync was partial (check rsync exit code and network connectivity to Tailscale IP)
+- **Drift detection:** `rsync -avn --delete dist/ daniel@100.89.11.76:/var/www/sites/tsa-monster/` dry-run produces empty output when in sync; any listed files indicate a stale or partial transfer
+- **Failure path:** If rsync times out or Tailscale is not connected, SSH will hang — verify `tailscale status` locally before retrying
+
 ## Expected Output
 
 - `/etc/caddy/sites/` exists on VPS, owned by `daniel:daniel` (enables T02 to write site conf without sudo)

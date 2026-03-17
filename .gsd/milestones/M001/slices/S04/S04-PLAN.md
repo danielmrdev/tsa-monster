@@ -44,6 +44,23 @@ curl -s -o /dev/null -w '%{http_code}' https://tsa.monster/en/
 # Root redirect
 curl -sI https://tsa.monster/ | grep -i location
 # expect: Location: https://tsa.monster/en/ (or /en/)
+
+# --- Failure / diagnostic checks ---
+
+# Caddy service status (authoritative — exits non-zero if caddy is failed/inactive)
+ssh daniel@100.89.11.76 'systemctl is-active caddy'
+# expect: active (non-zero exit = caddy is not running)
+
+# Last 20 Caddy log lines (run if loopback curl returns non-200 or caddy is not active)
+ssh daniel@100.89.11.76 'journalctl -u caddy -n 20 --no-pager'
+
+# sites/ dir ownership (verify T01 prerequisite before T02 writes the conf)
+ssh daniel@100.89.11.76 'stat -c "%U:%G %n" /etc/caddy/sites'
+# expect: daniel:daniel /etc/caddy/sites
+
+# Rsync dry-run diff (re-run to detect drift between local dist/ and VPS)
+rsync -avn --delete -e 'ssh' dist/ daniel@100.89.11.76:/var/www/sites/tsa-monster/
+# expect: empty output (no deletes, no new files) after successful T01 transfer
 ```
 
 ## Observability / Diagnostics

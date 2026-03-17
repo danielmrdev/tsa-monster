@@ -10,20 +10,32 @@ A real, professional-looking review site that passes Amazon's manual Associates 
 
 ## Current State
 
-Fresh repository. No source code yet. GSD planning complete, ready for execution.
+**S01 complete.** Astro 6 project scaffolded and fully verified. `pnpm build` exits 0 — 2 pages built (`/en/`, `/`), sitemap generated, TypeScript clean (14 files, 0 errors). All shared layouts and components in place. Dynamic article route ready for S03 content. Public files in place.
 
 ## Architecture / Key Patterns
 
 - **Framework:** Astro 6 (static output — `output: 'static'`)
-- **Styles:** Tailwind CSS v4
+- **Styles:** Tailwind v4 via `@tailwindcss/vite` Vite plugin — CSS-first config in `src/styles/global.css` (`@import "tailwindcss"` + `@theme {}`). No `tailwind.config.js`.
 - **Language:** TypeScript
-- **Content:** MDX via Astro Content Collections
-- **i18n:** Astro native i18n with `prefixDefaultLocale: true` — all URLs prefixed (`/en/`, `/de/`, ...)
-- **Language redirect:** Client-side script at `/` reads `navigator.language`, redirects to matching locale, fallback to `/en/`
+- **Content:** MDX via Astro Content Collections — schema at `src/content.config.ts` (root-level, Astro 6 requirement)
+- **i18n:** Astro native i18n with `prefixDefaultLocale: true` — all URLs prefixed (`/en/`, ...)
+- **Language redirect:** Client-side script at `/` reads `navigator.language` + `navigator.languages`, redirects to matching locale, fallback to `/en/`
 - **Images:** Unsplash lifestyle/ambient photos, downloaded as local assets (not hotlinked)
 - **Deploy:** VPS with existing Caddy — new site block added to existing config, `dist/` copied to `/var/www/tsa-monster/`
 - **CDN/DNS:** Cloudflare in proxy mode, SSL Full (strict)
-- **Package manager:** pnpm
+- **Package manager:** pnpm (v10 — requires `onlyBuiltDependencies` for esbuild/sharp)
+- **Brand palette:** Amber/slate editorial — `#f59e0b` brand, `#0f172a` ink, `#f8fafc` surface, DM Sans + DM Serif Display fonts
+
+## Key Files
+
+- `astro.config.mjs` — site config, i18n, integrations, Vite Tailwind plugin
+- `src/styles/global.css` — Tailwind v4 CSS-first config + brand tokens
+- `src/i18n/config.ts` — LOCALES, DEFAULT_LOCALE, helpers
+- `src/content.config.ts` — reviews collection schema (contract for all MDX articles)
+- `src/layouts/BaseLayout.astro` — shared page shell (SEO head, canonical, OG, hreflang)
+- `src/layouts/ArticleLayout.astro` — article shell (extends BaseLayout, adds AffiliateDisclosure + JSON-LD)
+- `src/pages/index.astro` — redirect only
+- `src/pages/en/[category]/[slug].astro` — dynamic article route
 
 ## Capability Contract
 
@@ -31,4 +43,8 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
+- [x] S01: Astro scaffold + i18n foundation — **complete**
+- [ ] S02: Static pages + home (About, Privacy Policy, Affiliate Disclosure, Contact, Home content)
+- [ ] S03: 15 review articles + images
+- [ ] S04: Build + deploy (VPS, Caddy, Cloudflare)
 - [ ] M001: Launch — Build and deploy tsa.monster, ready for Amazon Associates US application

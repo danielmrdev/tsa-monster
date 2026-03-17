@@ -62,3 +62,17 @@ export default defineConfig({
 **Context:** `browser_navigate` fails with `libnspr4.so: cannot open shared object file` — the Playwright Chromium shell lacks its system library dependencies.  
 **Workaround:** Use `curl -s http://localhost:4321/en/` for page content verification. Check generated `dist/_astro/*.css` for Tailwind utility class presence. Use `pnpm build` + `ls dist/` for output verification.  
 **Rule:** Never rely on browser_* tools for verification in this environment. All UI verification must be done via curl or file inspection.
+
+## K007 — Astro 6 dynamic routes with glob loader: use entry.id for slug, not entry.slug
+
+**Discovered:** M001/S01/T03  
+**Context:** `entry.slug` does not exist in Astro 6 content collection entries created with the `glob()` loader. Referencing it causes a TypeScript error.  
+**Fix:** Derive the slug from `entry.id`: `entry.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? entry.id`. This strips the file extension and extracts the filename. Works for both `.md` and `.mdx`.  
+**Rule:** In any Astro 6 `getStaticPaths()` using `getCollection()` + glob loader, always use `entry.id` for slug derivation. Never reference `entry.slug`.
+
+## K008 — Empty content collection with getStaticPaths() is not a build error in Astro 6
+
+**Discovered:** M001/S01/T03  
+**Context:** With zero MDX/MD files, `getStaticPaths()` returns `[]` — Astro logs "The collection 'reviews' does not exist or is empty" at build time but still exits 0. This is expected behavior during scaffold phases.  
+**Rule:** Do not treat the empty-collection log message as a build failure. It disappears when content is added in S03.
+

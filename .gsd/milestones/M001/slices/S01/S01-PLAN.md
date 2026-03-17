@@ -50,6 +50,12 @@ pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]' || echo "Build clean"
 
 # Inspect generated CSS for Tailwind custom properties
 grep -l 'text-brand\|bg-surface' dist/_astro/*.css 2>/dev/null || echo "Check dist/_astro/ manually"
+
+# Dynamic route failure-state check: empty collection must NOT error
+pnpm build 2>&1 | grep -i 'category\|slug' || echo "No dynamic route errors"
+
+# Confirm dynamic route file is present and robots/headers in public
+ls src/pages/en/'[category]'/'[slug]'.astro && ls public/robots.txt && ls public/_headers && echo "Public files OK"
 ```
 
 Browser check (run during T03): open `http://localhost:4321`, confirm `/` redirects to `/en/` and styled content visible.
@@ -76,7 +82,7 @@ Browser check (run during T03): open `http://localhost:4321`, confirm `/` redire
   - Verify: `pnpm build` exits 0 with no TypeScript errors. `pnpm astro check` clean.
   - Done when: `pnpm build` exits 0 and `pnpm astro check` reports zero errors.
 
-- [ ] **T03: Add dynamic article route, public files, final build verification** `est:30m`
+- [x] **T03: Add dynamic article route, public files, final build verification** `est:30m`
   - Why: Completes the slice. The dynamic route is the contract S03 depends on; public files are required by R007. Final build check confirms the full slice is valid.
   - Files: `src/pages/en/[category]/[slug].astro`, `public/robots.txt`, `public/_headers`
   - Do: Write `src/pages/en/[category]/[slug].astro` — `getStaticPaths()` calls `getCollection('reviews')`, maps each entry to `{params: {category: entry.data.category, slug: entry.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? entry.id}, props: {entry}}`; component calls `const { Content } = await render(entry)` and renders via `<ArticleLayout>`. With zero articles in S01 this generates zero routes — that's expected and `pnpm build` must not error on it. Write `public/robots.txt`: `User-agent: *\nAllow: /\nSitemap: https://tsa.monster/sitemap-index.xml`. Write `public/_headers` with Cloudflare cache directives: `Cache-Control: public, max-age=31536000, immutable` for `/_astro/*`, `Cache-Control: public, max-age=3600, s-maxage=86400` for `/*.html`.

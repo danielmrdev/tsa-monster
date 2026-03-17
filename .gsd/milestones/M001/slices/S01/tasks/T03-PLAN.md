@@ -115,6 +115,15 @@ Expected output ends with `SLICE S01 VERIFIED`.
 
 Browser check: start `pnpm dev`, open `http://localhost:4321/` — must redirect to `http://localhost:4321/en/`. Page at `/en/` must show Header with logo and category nav, content area, Footer with legal links.
 
+## Observability Impact
+
+- **Dynamic route presence**: `ls src/pages/en/\[category\]/\[slug\].astro` confirms the file exists; `pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]'` confirms it compiled cleanly.
+- **Empty collection is not an error**: With zero MDX files, `getStaticPaths()` returns `[]` — build succeeds silently. Check `pnpm build 2>&1 | grep -i 'category\|slug'` to confirm no route-generation error.
+- **robots.txt in output**: `ls dist/robots.txt` post-build; `cat dist/robots.txt` to verify sitemap URL is `https://tsa.monster/sitemap-index.xml`.
+- **_headers not in dist**: Cloudflare reads `_headers` from the project root at deploy time, not from `dist/`. Its presence in `public/` is the correct state — verify with `ls public/_headers`.
+- **Sitemap generated**: `ls dist/sitemap-index.xml` (or `ls dist/sitemap-0.xml`) post-build confirms `@astrojs/sitemap` ran.
+- **Failure state inspection**: If `pnpm build` fails on the dynamic route, check `pnpm build 2>&1 | grep -A3 '\[ERROR\]'` for file + line. Common causes: wrong import path for `ArticleLayout`, missing `render` import, or schema field mismatch in `ArticleLayout` props.
+
 ## Inputs
 
 - `src/layouts/ArticleLayout.astro` from T02

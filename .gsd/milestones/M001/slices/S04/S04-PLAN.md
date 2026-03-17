@@ -82,7 +82,7 @@ rsync -avn --delete -e 'ssh' dist/ daniel@100.89.11.76:/var/www/sites/tsa-monste
 
 ## Tasks
 
-- [ ] **T01: One-time VPS setup + rsync dist/ to server** `est:20m`
+- [x] **T01: One-time VPS setup + rsync dist/ to server** `est:20m`
   - Why: The agent cannot write to `/etc/caddy/sites/` without a one-time root mkdir/chown. Once the directory exists and is daniel-owned, T02 can write the conf file unattended. The dist/ transfer is also a prerequisite for T02's Caddy verification.
   - Files: local `dist/` → VPS `/var/www/sites/tsa-monster/`
   - Do: (1) Ask the user to run the one-time interactive sudo commands on the VPS via SSH. (2) rsync `dist/` to the VPS. (3) Confirm 25 index.html files are present on the VPS.

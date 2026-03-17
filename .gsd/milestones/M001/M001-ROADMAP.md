@@ -87,7 +87,7 @@ Consumes:
 ### S01 → S03
 
 Produces:
-- `src/content/config.ts` — reviews collection schema (same as above; articles depend on this shape)
+- `src/content.config.ts` — reviews collection schema (same as above; articles depend on this shape)
 - `src/pages/en/[category]/[slug].astro` — dynamic article route, renders MDX via ArticleLayout
 
 Consumes:

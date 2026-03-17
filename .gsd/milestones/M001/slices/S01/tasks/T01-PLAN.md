@@ -134,6 +134,14 @@ Creates the entire buildable Astro 6 project from nothing: scaffold, dependency 
 - [ ] `src/pages/en/index.astro` exists and renders with Tailwind utility classes visible
 - [ ] `src/i18n/config.ts` exports `LOCALES`, `DEFAULT_LOCALE`, `getSupportedLocales()`, `isSupportedLocale()`
 
+## Observability Impact
+
+- **Build output**: `pnpm build` stdout/stderr is the primary signal — structured `[ERROR]` lines point to exact files. Exit code is machine-checkable.
+- **Generated CSS**: `dist/_astro/*.css` contains Tailwind-generated utility classes. Presence of custom properties (`--color-brand`, `--color-surface`) in the CSS confirms `@theme {}` block was processed.
+- **Dev server logs**: `pnpm dev` prints Vite HMR events and Astro integration status; any `[tailwindcss]` lines confirm plugin loaded.
+- **TypeScript signals**: `pnpm astro check` reports errors with file + line number. Any `error TS` in output is a failure requiring fix.
+- **Failure state inspection**: If build fails mid-task, `cat .astro/types.d.ts` shows generated type surfaces; `node_modules/.cache/` holds Vite's transform cache (delete to force re-transform on suspected stale state).
+
 ## Verification
 
 ```bash

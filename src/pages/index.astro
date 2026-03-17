@@ -1,0 +1,18 @@
+---
+// No layout — redirect only
+---
+<script>
+import { LOCALES, DEFAULT_LOCALE } from '../i18n/config';
+
+function getBestLocale(): string {
+  const candidates = [...(navigator.languages ?? [navigator.language])];
+  for (const lang of candidates) {
+    const short = lang.split('-')[0].toLowerCase();
+    if ((LOCALES as readonly string[]).includes(short)) return short;
+  }
+  return DEFAULT_LOCALE;
+}
+
+const locale = getBestLocale();
+window.location.replace(`/${locale}/`);
+</script>

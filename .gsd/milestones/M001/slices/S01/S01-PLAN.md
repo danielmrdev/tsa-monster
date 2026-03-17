@@ -22,6 +22,16 @@
 - Real runtime required: yes (Tailwind rendering requires `pnpm dev` browser check)
 - Human/UAT required: no (build output and redirect behavior are machine-verifiable)
 
+## Observability / Diagnostics
+
+- **Build errors**: `pnpm build` prints structured errors to stderr — check for `[ERROR]` lines with file + line references.
+- **Tailwind rendering**: Inspect generated `dist/en/index.html` for `class="..."` attributes; computed styles in DevTools confirm custom properties resolve. Check `dist/_astro/*.css` for the presence of `.text-brand`, `.bg-surface`, etc.
+- **i18n routing failures**: Astro logs `[warn] i18n` lines when locale config mismatches page routes. Look for warnings in `pnpm build` or `pnpm dev` output.
+- **TypeScript errors**: `pnpm astro check` emits `error TS` lines; non-zero exit code signals failure.
+- **Dev server failure state**: If `pnpm dev` fails to start, check port 4321 already in use (`ss -tlnp | grep 4321`); inspect `node_modules/.astro/` cache for stale build artifacts.
+- **Failure-path check**: `pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]'` — zero output is clean; any output indicates configuration or type issues that must be resolved before marking done.
+- **Redaction**: No secrets or credentials in any source file — all config is public (site URL, locale list, CSS tokens).
+
 ## Verification
 
 ```bash
@@ -34,6 +44,12 @@ ls dist/sitemap-index.xml 2>/dev/null || ls dist/sitemap-0.xml
 
 # TypeScript clean
 pnpm astro check
+
+# Diagnostic: confirm no build errors or warnings
+pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]' || echo "Build clean"
+
+# Inspect generated CSS for Tailwind custom properties
+grep -l 'text-brand\|bg-surface' dist/_astro/*.css 2>/dev/null || echo "Check dist/_astro/ manually"
 ```
 
 Browser check (run during T03): open `http://localhost:4321`, confirm `/` redirects to `/en/` and styled content visible.
@@ -46,7 +62,7 @@ Browser check (run during T03): open `http://localhost:4321`, confirm `/` redire
 
 ## Tasks
 
-- [ ] **T01: Scaffold Astro project, wire Tailwind v4, configure i18n** `est:45m`
+- [x] **T01: Scaffold Astro project, wire Tailwind v4, configure i18n** `est:45m`
   - Why: Establishes the buildable foundation everything else depends on. Tailwind v4 config is the highest-risk item — must be verified rendering before layouts are written on top of it.
   - Files: `package.json`, `astro.config.mjs`, `src/styles/global.css`, `src/env.d.ts`, `tsconfig.json`, `src/pages/index.astro`, `src/pages/en/index.astro`, `src/i18n/config.ts`
   - Do: Run `pnpm create astro@latest . -- --template minimal --typescript strict --no-install --git false`, then `pnpm install`. Install deps: `pnpm add @astrojs/mdx @astrojs/sitemap tailwindcss @tailwindcss/vite @tailwindcss/typography`. Configure `astro.config.mjs` (see research for exact shape — Vite plugin, i18n block, integrations). Create `src/styles/global.css` with `@import "tailwindcss"`, `@plugin "@tailwindcss/typography"`, and `@theme {}` block with site color tokens. Create `src/i18n/config.ts` with `LOCALES`, `DEFAULT_LOCALE`, `getSupportedLocales()`, `isSupportedLocale()`. Replace scaffold `src/pages/index.astro` with the client-side redirect script. Create `src/pages/en/index.astro` as a minimal shell page that imports `global.css` and uses at least one Tailwind utility class.

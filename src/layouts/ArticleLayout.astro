@@ -1,0 +1,76 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  lang?: string;
+  date?: Date;
+  heroImage?: string;
+}
+
+const { title, description, ogImage, lang, date, heroImage } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description,
+  ...(date && { datePublished: date.toISOString() }),
+  ...(heroImage && { image: new URL(heroImage, Astro.site).href }),
+  url: canonicalUrl,
+  publisher: {
+    '@type': 'Organization',
+    name: 'TSA Monster',
+    url: 'https://tsa.monster',
+  },
+};
+---
+
+<BaseLayout {title} {description} {ogImage} {lang}>
+  <Fragment slot="head">
+    {date && <meta property="article:published_time" content={date.toISOString()} />}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex-1">
+    <!-- Hero image -->
+    {heroImage && (
+      <div class="mb-8 rounded-xl overflow-hidden aspect-video bg-slate-100">
+        <img
+          src={heroImage}
+          alt={title}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
+
+    <!-- Article header -->
+    <header class="mb-8">
+      {date && (
+        <time
+          datetime={date.toISOString()}
+          class="text-sm text-ink-muted font-medium uppercase tracking-wide"
+        >
+          {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      )}
+      <h1 class="font-display text-3xl sm:text-4xl font-bold text-ink mt-2 leading-tight">
+        {title}
+      </h1>
+    </header>
+
+    <!-- FTC disclosure above article content -->
+    <AffiliateDisclosure />
+
+    <!-- Article body -->
+    <div class="prose prose-slate max-w-none">
+      <slot />
+    </div>
+  </main>
+</BaseLayout>

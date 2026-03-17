@@ -1,17 +1,15 @@
 ---
-import '../../styles/global.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TSA Monster — Home</title>
-  </head>
-  <body class="bg-surface font-sans text-slate-900">
-    <main class="max-w-4xl mx-auto p-8">
-      <h1 class="text-4xl font-bold text-brand">TSA Monster</h1>
-      <p class="mt-4 text-lg text-slate-600">Best travel gear reviews.</p>
-    </main>
-  </body>
-</html>
+
+<BaseLayout
+  title="TSA Monster — Best Travel Gear Reviews"
+  description="Expert reviews of kitchen gadgets, outdoor gear, home products, and beauty tools."
+>
+  <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-12">
+    <h1 class="font-display text-5xl font-bold text-ink">TSA Monster</h1>
+    <p class="mt-4 text-lg text-ink-muted">
+      Expert reviews of the best products across kitchen, outdoor, home, and beauty.
+    </p>
+  </main>
+</BaseLayout>

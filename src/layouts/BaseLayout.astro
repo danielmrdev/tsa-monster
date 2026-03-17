@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  lang?: string;
+}
+
+const { title, description, ogImage, lang = 'en' } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const resolvedOgImage = ogImage
+  ? new URL(ogImage, Astro.site).href
+  : new URL('/og-default.png', Astro.site).href;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={resolvedOgImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
+    <!-- hreflang — currently English only -->
+    <link rel="alternate" hreflang="en" href={new URL('/en/', Astro.site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/en/', Astro.site).href} />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Fonts (DM Sans + DM Serif Display via Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display:ital@0;1&display=swap"
+    />
+
+    <!-- Page-specific head additions -->
+    <slot name="head" />
+  </head>
+  <body class="bg-surface text-ink font-sans min-h-screen flex flex-col">
+    <Header />
+    <slot />
+    <Footer />
+  </body>
+</html>

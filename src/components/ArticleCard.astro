@@ -1,0 +1,69 @@
+---
+interface Props {
+  title: string;
+  excerpt: string;
+  category: string;
+  slug: string;
+  heroImage: string;
+  date: Date;
+}
+
+const { title, excerpt, category, slug, heroImage, date } = Astro.props;
+
+const href = `/en/${category}/${slug}/`;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
+---
+
+<article class="group bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex flex-col">
+  <!-- Hero image -->
+  <a href={href} aria-label={`Read ${title}`} class="block overflow-hidden aspect-video bg-slate-100 shrink-0">
+    <img
+      src={heroImage}
+      alt={title}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      loading="lazy"
+    />
+  </a>
+
+  <!-- Card body -->
+  <div class="flex flex-col flex-1 p-5">
+    <!-- Meta row -->
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-xs font-semibold uppercase tracking-wide bg-brand-light text-brand-dark px-2 py-0.5 rounded-full">
+        {categoryLabel}
+      </span>
+      <time datetime={date.toISOString()} class="text-xs text-ink-muted">
+        {formattedDate}
+      </time>
+    </div>
+
+    <!-- Title -->
+    <h2 class="font-display text-lg font-bold text-ink leading-snug mb-2">
+      <a href={href} class="hover:text-brand transition-colors">
+        {title}
+      </a>
+    </h2>
+
+    <!-- Excerpt -->
+    <p class="text-sm text-ink-muted leading-relaxed flex-1 mb-4">
+      {excerpt}
+    </p>
+
+    <!-- CTA -->
+    <a
+      href={href}
+      class="self-start text-sm font-semibold text-brand hover:text-brand-dark transition-colors inline-flex items-center gap-1 group/link"
+      aria-label={`Read more about ${title}`}
+    >
+      Read more
+      <span aria-hidden="true" class="group-hover/link:translate-x-0.5 transition-transform">→</span>
+    </a>
+  </div>
+</article>

@@ -1,0 +1,43 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = Astro.currentLocale ?? 'en';
+
+const categories = [
+  { label: 'Kitchen', slug: 'kitchen' },
+  { label: 'Outdoor', slug: 'outdoor' },
+  { label: 'Home', slug: 'home' },
+  { label: 'Beauty', slug: 'beauty' },
+] as const;
+---
+
+<header class="bg-ink text-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16 gap-6">
+      <!-- Logo -->
+      <a
+        href={getRelativeLocaleUrl(locale, '/')}
+        class="font-display text-xl font-bold tracking-tight text-brand hover:text-brand-dark transition-colors shrink-0"
+        aria-label="TSA Monster — Home"
+      >
+        TSA Monster
+      </a>
+
+      <!-- Nav -->
+      <nav aria-label="Primary navigation">
+        <ul class="flex items-center gap-1 sm:gap-2">
+          {categories.map(({ label, slug }) => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(locale, `/${slug}/`)}
+                class="text-sm font-medium px-3 py-2 rounded-md text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>

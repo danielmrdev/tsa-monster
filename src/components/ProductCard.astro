@@ -1,0 +1,64 @@
+---
+interface Props {
+  name: string;
+  rating: number;
+  description: string;
+  affiliateUrl?: string;
+}
+
+const { name, rating, description, affiliateUrl } = Astro.props;
+
+// Build star display (full, half, empty) for ratings 1-5
+const MAX_STARS = 5;
+const clampedRating = Math.max(1, Math.min(5, rating));
+// Round to nearest 0.5
+const roundedRating = Math.round(clampedRating * 2) / 2;
+
+type StarType = 'full' | 'half' | 'empty';
+const stars: StarType[] = Array.from({ length: MAX_STARS }, (_, i) => {
+  const starValue = i + 1;
+  if (roundedRating >= starValue) return 'full';
+  if (roundedRating >= starValue - 0.5) return 'half';
+  return 'empty';
+});
+---
+
+<div class="bg-white border border-slate-100 rounded-xl p-5 flex flex-col sm:flex-row gap-4 shadow-sm hover:shadow-md transition-shadow">
+  <!-- Product info -->
+  <div class="flex-1 min-w-0">
+    <div class="flex flex-wrap items-start gap-3 mb-2">
+      <h3 class="font-display text-base font-bold text-ink leading-snug">{name}</h3>
+
+      <!-- Star rating -->
+      <span class="flex items-center gap-0.5 shrink-0" aria-label={`Rating: ${roundedRating} out of 5 stars`}>
+        {stars.map((type) => (
+          <span aria-hidden="true" class="text-lg leading-none">
+            {type === 'full' && <span class="text-brand">★</span>}
+            {type === 'half' && (
+              <span class="relative inline-block text-slate-200">
+                ★
+                <span class="absolute inset-0 overflow-hidden w-1/2 text-brand">★</span>
+              </span>
+            )}
+            {type === 'empty' && <span class="text-slate-200">★</span>}
+          </span>
+        ))}
+        <span class="ml-1 text-xs font-medium text-ink-muted">({roundedRating.toFixed(1)})</span>
+      </span>
+    </div>
+
+    <p class="text-sm text-ink-muted leading-relaxed">{description}</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="shrink-0 flex items-center sm:items-start pt-0 sm:pt-1">
+    <a
+      href={affiliateUrl ?? '#'}
+      {...(affiliateUrl ? { target: '_blank', rel: 'noopener noreferrer sponsored' } : {})}
+      class="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-ink font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+    >
+      Check on Amazon
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</div>

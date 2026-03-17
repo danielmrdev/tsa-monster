@@ -1,0 +1,42 @@
+---
+const year = new Date().getFullYear();
+
+const legalLinks = [
+  { label: 'Privacy Policy', href: '/en/privacy-policy/' },
+  { label: 'Affiliate Disclosure', href: '/en/affiliate-disclosure/' },
+  { label: 'About', href: '/en/about/' },
+  { label: 'Contact', href: '/en/contact/' },
+] as const;
+---
+
+<footer class="bg-ink text-slate-400 mt-auto">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <!-- Legal nav -->
+    <nav aria-label="Footer navigation" class="mb-6">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2">
+        {legalLinks.map(({ label, href }) => (
+          <li>
+            <a
+              href={href}
+              class="text-sm hover:text-white transition-colors"
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Affiliate disclosure -->
+    <p class="text-xs text-slate-500 leading-relaxed max-w-3xl mb-4">
+      TSA Monster is a participant in the Amazon Services LLC Associates Program, an affiliate
+      advertising program designed to provide a means for sites to earn advertising fees by
+      advertising and linking to Amazon.com.
+    </p>
+
+    <!-- Copyright -->
+    <p class="text-xs text-slate-600">
+      &copy; {year} TSA Monster. All rights reserved.
+    </p>
+  </div>
+</footer>

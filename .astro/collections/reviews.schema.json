@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "kitchen",
+        "outdoor",
+        "home",
+        "beauty"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "heroImage": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "products": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "description": {
+            "type": "string"
+          },
+          "affiliateUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "rating",
+          "description"
+        ]
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "category",
+    "date",
+    "heroImage",
+    "excerpt",
+    "products"
+  ]
+}

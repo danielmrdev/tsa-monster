@@ -42,6 +42,20 @@ export default defineConfig({
 ```
 **Rule:** No `tailwind.config.js`. No `content` array. No `@tailwind base/components/utilities` directives. All config is CSS-first.
 
+## K005 — Astro 6 content config file is `src/content.config.ts`, NOT `src/content/config.ts`
+
+**Discovered:** M001/S01/T02  
+**Context:** Astro 6 removed the legacy `src/content/config.ts` location. Placing content config there causes `[LegacyContentConfigError]` and build failure.  
+**Fix:** Place content collection definitions at `src/content.config.ts` (in `src/`, not inside `src/content/`). The file must use `loader: glob(...)` from `astro/loaders` and `z` from `astro/zod`.  
+**Rule:** Any new Astro 6 project that needs content collections must use `src/content.config.ts`. Never use `src/content/config.ts`.
+
+## K006 — Schema.org JSON-LD `<script>` in Astro requires `is:inline` when using `set:html`
+
+**Discovered:** M001/S01/T02  
+**Context:** `<script type="application/ld+json" set:html={...}>` generates hint `astro(4000)` — Astro warns that the script will be treated as inline due to the `type` attribute, and suggests adding `is:inline` explicitly.  
+**Fix:** Write `<script is:inline type="application/ld+json" set:html={JSON.stringify(data)} />` to silence the hint cleanly.  
+**Rule:** All JSON-LD or other typed script tags in Astro components must include `is:inline`.
+
 ## K004 — Playwright browser tools unavailable in this environment
 
 **Discovered:** M001/S01/T01  

@@ -27,6 +27,9 @@
     "excerpt": {
       "type": "string"
     },
+    "author": {
+      "type": "string"
+    },
     "products": {
       "type": "array",
       "items": {

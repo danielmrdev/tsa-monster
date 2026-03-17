@@ -11,6 +11,7 @@ const reviews = defineCollection({
     date: z.coerce.date(),
     heroImage: z.string(),
     excerpt: z.string(),
+    author: z.string().optional(),
     products: z.array(
       z.object({
         name: z.string(),

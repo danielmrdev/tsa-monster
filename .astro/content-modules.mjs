@@ -1,8 +1,18 @@
 
 export default new Map([
+["src/content/reviews/beauty/best-electric-toothbrushes.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fbeauty%2Fbest-electric-toothbrushes.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/beauty/best-face-serums.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fbeauty%2Fbest-face-serums.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/beauty/best-hair-dryers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fbeauty%2Fbest-hair-dryers.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/home/best-air-purifiers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fhome%2Fbest-air-purifiers.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/home/best-robot-vacuums.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fhome%2Fbest-robot-vacuums.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/home/best-smart-plugs.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fhome%2Fbest-smart-plugs.mdx&astroContentModuleFlag=true")],
 ["src/content/reviews/kitchen/best-air-fryers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-air-fryers.mdx&astroContentModuleFlag=true")],
 ["src/content/reviews/kitchen/best-blenders.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-blenders.mdx&astroContentModuleFlag=true")],
 ["src/content/reviews/kitchen/best-chef-knives.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-chef-knives.mdx&astroContentModuleFlag=true")],
 ["src/content/reviews/kitchen/best-coffee-makers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-coffee-makers.mdx&astroContentModuleFlag=true")],
-["src/content/reviews/kitchen/best-stand-mixers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-stand-mixers.mdx&astroContentModuleFlag=true")]]);
+["src/content/reviews/kitchen/best-stand-mixers.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Fkitchen%2Fbest-stand-mixers.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/outdoor/best-camping-tents.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Foutdoor%2Fbest-camping-tents.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/outdoor/best-headlamps.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Foutdoor%2Fbest-headlamps.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/outdoor/best-hiking-backpacks.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Foutdoor%2Fbest-hiking-backpacks.mdx&astroContentModuleFlag=true")],
+["src/content/reviews/outdoor/best-water-filters.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Freviews%2Foutdoor%2Fbest-water-filters.mdx&astroContentModuleFlag=true")]]);
 		

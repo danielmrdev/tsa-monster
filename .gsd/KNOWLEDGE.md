@@ -83,3 +83,10 @@ export default defineConfig({
 **Context:** With zero MDX/MD files, `getStaticPaths()` returns `[]` — Astro logs "The collection 'reviews' does not exist or is empty" at build time but still exits 0. This is expected behavior during scaffold phases.  
 **Rule:** Do not treat the empty-collection log message as a build failure. It disappears when content is added in S03.
 
+## K010 — sitemap-0.xml is single-line XML; use grep -o not grep -c to count <loc> entries
+
+**Discovered:** M001/S03/T03  
+**Context:** `@astrojs/sitemap` generates `sitemap-0.xml` as a single continuous line with no newlines. `grep -c "<loc>" dist/sitemap-0.xml` always returns 1 (one matching line) regardless of how many `<loc>` tags are present.  
+**Fix:** Use `grep -o "<loc>" dist/sitemap-0.xml | wc -l` to count occurrences across a single-line file. Or: `grep -c "<url>" dist/sitemap-0.xml` also returns 1 but `grep -o "<url>" | wc -l` returns the URL count.  
+**Rule:** Never use `grep -c` to count XML tag occurrences in a single-line file. Use `grep -o pattern | wc -l` instead.
+

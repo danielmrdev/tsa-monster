@@ -71,6 +71,13 @@ find public/images -name "*.jpg" -size -10k
 
 # Inspect category listing page rendered output
 grep -o 'href="/en/kitchen/[^"]*"' dist/en/kitchen/index.html | head -10
+
+# Count sitemap <loc> entries — use grep -o, NOT grep -c, because sitemap-0.xml is single-line XML
+# grep -c always returns 1 for a single-line file regardless of match count
+grep -o "<loc>" dist/sitemap-0.xml | wc -l   # → ≥25
+
+# Confirm all 25 routes built (15 articles + 4 category + 6 static)
+find dist/en -name "index.html" | wc -l   # → 25
 ```
 
 ## Integration Closure
@@ -95,7 +102,7 @@ grep -o 'href="/en/kitchen/[^"]*"' dist/en/kitchen/index.html | head -10
   - Verify: `pnpm build 2>&1 | grep -E '\[ERROR\]'` → 0 lines; `ls dist/en/kitchen/` shows 5 article subdirectories + `index.html`
   - Done when: 5 kitchen article routes appear in build output, `pnpm build` exits 0, no schema validation errors
 
-- [ ] **T03: Write remaining 10 articles (Outdoor ×4, Home ×3, Beauty ×3) and verify full slice** `est:2h`
+- [x] **T03: Write remaining 10 articles (Outdoor ×4, Home ×3, Beauty ×3) and verify full slice** `est:2h`
   - Why: Completes the article corpus. Final `pnpm build` here is the slice's acceptance gate — all 25 routes must exist, sitemap must be populated, TypeScript must be clean.
   - Files: `src/content/reviews/outdoor/best-hiking-backpacks.mdx`, `src/content/reviews/outdoor/best-camping-tents.mdx`, `src/content/reviews/outdoor/best-headlamps.mdx`, `src/content/reviews/outdoor/best-water-filters.mdx`, `src/content/reviews/home/best-robot-vacuums.mdx`, `src/content/reviews/home/best-air-purifiers.mdx`, `src/content/reviews/home/best-smart-plugs.mdx`, `src/content/reviews/beauty/best-electric-toothbrushes.mdx`, `src/content/reviews/beauty/best-face-serums.mdx`, `src/content/reviews/beauty/best-hair-dryers.mdx`
   - Do: Write all 10 MDX files using the same pattern as T02. ProductCard import path for outdoor/home/beauty is the same (`'../../../components/ProductCard.astro'`). Verify images from T01 are referenced correctly. Run full slice verification suite on completion.

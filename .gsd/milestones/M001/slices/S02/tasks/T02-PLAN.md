@@ -96,6 +96,24 @@ pnpm astro check
 - **K008**: `getCollection('reviews')` returns `[]` on empty collection — not a build error. The empty-state check in the articles section is mandatory.
 - `src/styles/global.css` — **do not modify**. Available custom tokens: `text-ink`, `text-ink-muted`, `bg-ink`, `bg-surface`, `bg-brand-light`, `border-brand`, `text-brand`, `text-brand-dark`, `bg-brand`, `bg-brand-dark`, `font-display`.
 
+## Observability Impact
+
+**What changes:** `dist/en/index.html` gains three `<section>` blocks (hero, category grid, recent reviews) and BaseLayout-injected SEO meta.
+
+**Inspection signals:**
+- `grep 'og:title\|canonical' dist/en/index.html` — confirms BaseLayout SEO meta rendered
+- `grep -i 'kitchen\|outdoor\|home\|beauty' dist/en/index.html` — confirms category grid links present
+- `grep 'Reviews coming soon' dist/en/index.html` — confirms empty-collection placeholder rendered (expected until S03 adds review content)
+- `grep 'getCollection\|ArticleCard' dist/en/index.html` — should return nothing (compiled away at build time)
+
+**Failure state visibility:**
+- Build error `Cannot find module '../../components/ArticleCard.astro'` → import path wrong; check from `src/pages/en/`
+- Build error involving `entry.slug` → K007 violation; use `entry.id.split('/').pop()?.replace(/\.mdx?$/, '')` instead
+- Empty category grid in built HTML → verify href paths are `/en/{category}/` not relative paths
+- `pnpm astro check` type error on `ArticleCard` props → verify all six props (`title`, `excerpt`, `category`, `slug`, `heroImage`, `date`) are passed
+
+**No secrets involved** — all output is public static HTML.
+
 ## Expected Output
 
 - `src/pages/en/index.astro` — rewritten with hero + category grid + recent articles sections

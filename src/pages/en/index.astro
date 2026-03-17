@@ -1,15 +1,181 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const allReviews = await getCollection('reviews');
+const recentArticles = allReviews
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 6);
+
+const categories = [
+  {
+    slug: 'kitchen',
+    label: 'Kitchen',
+    description: 'Gadgets, cookware, and appliances that earn their counter space.',
+    icon: '🍳',
+  },
+  {
+    slug: 'outdoor',
+    label: 'Outdoor',
+    description: 'Gear built for trails, campfires, and everything in between.',
+    icon: '🏕️',
+  },
+  {
+    slug: 'home',
+    label: 'Home',
+    description: 'Smarter living — tools and products for every room.',
+    icon: '🏠',
+  },
+  {
+    slug: 'beauty',
+    label: 'Beauty',
+    description: 'Skincare, grooming, and wellness tested honestly.',
+    icon: '✨',
+  },
+];
 ---
 
 <BaseLayout
-  title="TSA Monster — Best Travel Gear Reviews"
-  description="Expert reviews of kitchen gadgets, outdoor gear, home products, and beauty tools."
+  title="TSA Monster — Expert Product Reviews"
+  description="Independent, hands-on reviews across kitchen, outdoor, home, and beauty — so you buy with confidence, not guesswork."
 >
-  <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-12">
-    <h1 class="font-display text-5xl font-bold text-ink">TSA Monster</h1>
-    <p class="mt-4 text-lg text-ink-muted">
-      Expert reviews of the best products across kitchen, outdoor, home, and beauty.
-    </p>
-  </main>
+  <!-- ── Hero ────────────────────────────────────────────────────── -->
+  <section aria-label="Hero" class="bg-ink text-white relative overflow-hidden">
+    <!-- Subtle amber glow backdrop -->
+    <div class="absolute inset-0 opacity-[0.07] bg-[radial-gradient(ellipse_80%_60%_at_50%_120%,#f59e0b,transparent)] pointer-events-none"></div>
+
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 py-24 sm:py-32 text-center">
+      <!-- Eyebrow -->
+      <p class="text-brand text-sm font-semibold uppercase tracking-widest mb-6">
+        Honest · Independent · Hands-on
+      </p>
+
+      <!-- Headline -->
+      <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl text-white leading-[1.1] mb-6">
+        Find the best products,<br />
+        <span class="text-brand">without the guesswork.</span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+        Independent reviews across kitchen, outdoor, home, and beauty —
+        with real hands-on testing and no brand deals.
+      </p>
+
+      <!-- CTA -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/en/kitchen/"
+          class="inline-block bg-brand text-ink font-semibold px-8 py-3.5 rounded-lg hover:bg-brand-dark transition-colors text-base"
+        >
+          Browse Reviews
+        </a>
+        <a
+          href="/en/about/"
+          class="inline-block border border-slate-600 text-slate-300 font-semibold px-8 py-3.5 rounded-lg hover:border-slate-400 hover:text-white transition-colors text-base"
+        >
+          Our Methodology
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Category Grid ─────────────────────────────────────────── -->
+  <section aria-label="Browse by category" class="bg-surface py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-display text-3xl text-ink text-center mb-2">Browse by Category</h2>
+      <p class="text-ink-muted text-center mb-10 text-base">
+        Every section is independently tested — no sponsored placements.
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {categories.map(({ slug, label, description, icon }) => (
+          <a
+            href={`/en/${slug}/`}
+            class="group flex flex-col bg-white border border-slate-100 rounded-xl p-6 hover:border-brand hover:shadow-md transition-all duration-200"
+          >
+            <span class="text-3xl mb-4 block" aria-hidden="true">{icon}</span>
+            <span class="font-display text-xl font-bold text-ink group-hover:text-brand transition-colors mb-1">
+              {label}
+            </span>
+            <span class="text-sm text-ink-muted leading-snug flex-1">{description}</span>
+            <span class="mt-4 text-brand text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+              Explore <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Recent Reviews ────────────────────────────────────────── -->
+  <section aria-label="Recent reviews" class="bg-white py-16 px-4 border-t border-slate-100">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-baseline justify-between mb-10">
+        <div>
+          <h2 class="font-display text-3xl text-ink mb-1">Recent Reviews</h2>
+          <p class="text-ink-muted text-sm">Our latest hands-on tests.</p>
+        </div>
+        {recentArticles.length > 0 && (
+          <a
+            href="/en/kitchen/"
+            class="text-sm font-semibold text-brand hover:text-brand-dark transition-colors inline-flex items-center gap-1"
+          >
+            View all <span aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+
+      {recentArticles.length === 0 ? (
+        <div class="text-center py-16 border border-dashed border-slate-200 rounded-xl">
+          <p class="text-ink-muted text-base">
+            Reviews coming soon. Check back shortly.
+          </p>
+          <p class="text-sm text-slate-400 mt-2">
+            We test everything before we write it up.
+          </p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recentArticles.map((entry) => {
+            const slug = entry.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? entry.id;
+            return (
+              <ArticleCard
+                title={entry.data.title}
+                excerpt={entry.data.excerpt}
+                category={entry.data.category}
+                slug={slug}
+                heroImage={entry.data.heroImage}
+                date={entry.data.date}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ── Trust bar ─────────────────────────────────────────────── -->
+  <section aria-label="Trust signals" class="bg-surface border-t border-slate-100 py-10 px-4">
+    <div class="max-w-5xl mx-auto">
+      <ul class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        <li class="flex flex-col items-center gap-2">
+          <span class="text-2xl" aria-hidden="true">🔍</span>
+          <span class="font-semibold text-ink text-sm">Hands-on testing only</span>
+          <span class="text-xs text-ink-muted">We buy and test — no PR samples accepted.</span>
+        </li>
+        <li class="flex flex-col items-center gap-2">
+          <span class="text-2xl" aria-hidden="true">💰</span>
+          <span class="font-semibold text-ink text-sm">Affiliate-funded, editorially independent</span>
+          <span class="text-xs text-ink-muted">Links may earn us a commission. Rankings never do.</span>
+        </li>
+        <li class="flex flex-col items-center gap-2">
+          <span class="text-2xl" aria-hidden="true">📋</span>
+          <span class="font-semibold text-ink text-sm">Transparent methodology</span>
+          <span class="text-xs text-ink-muted">Every review follows the same rubric. <a href="/en/about/" class="text-brand hover:underline">Read it here.</a></span>
+        </li>
+      </ul>
+    </div>
+  </section>
 </BaseLayout>

@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AffiliateDisclosureBlock from '../../components/AffiliateDisclosure.astro';
+---
+
+<BaseLayout
+  title="Affiliate Disclosure | TSA Monster"
+  description="TSA Monster is an Amazon Associates participant. Learn how our affiliate relationships work, how commissions are earned, and why they never influence our editorial recommendations."
+>
+  <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <article class="prose prose-slate max-w-none">
+      <h1 class="font-display">Affiliate Disclosure</h1>
+
+      <AffiliateDisclosureBlock />
+
+      <p class="lead">
+        Transparency is the foundation of useful reviews. This page explains exactly how affiliate
+        links work on TSA Monster, what it means for you, and how we ensure our editorial opinions
+        remain independent.
+      </p>
+
+      <h2>What Is the Amazon Associates Program?</h2>
+      <p>
+        The Amazon Services LLC Associates Program is an affiliate advertising program that allows
+        publishers to earn commissions by linking to products on Amazon.com. TSA Monster is a
+        participant in this program.
+      </p>
+      <p>
+        When you click an affiliate link on this site and subsequently make a qualifying purchase on
+        Amazon, Amazon pays us a small percentage of the sale price as a commission. The cost to
+        you is identical to what you'd pay if you navigated to Amazon directly — we receive a portion
+        of what Amazon would otherwise keep.
+      </p>
+
+      <h2>How Commissions Work</h2>
+      <p>
+        Amazon affiliate commissions range from approximately 1% to 10% of the sale price, depending
+        on the product category. These commissions help fund the editorial work of researching,
+        testing, and writing reviews — maintaining this site as a reader-supported resource rather
+        than one dependent on display advertising.
+      </p>
+      <p>
+        Commissions are tied to purchases made within a session after clicking our link — not to
+        your purchase history or personal identity. Amazon tracks this via a cookie placed on your
+        browser at the time of the click.
+      </p>
+
+      <h2>Editorial Independence</h2>
+      <p>
+        Affiliate commissions do not determine what we review, how we rate products, or what
+        recommendations we make. The products we feature are selected based on what we believe is
+        genuinely useful for our readers — not on commission rates.
+      </p>
+      <p>
+        Commission rates vary by category (and are generally low for the types of products we cover).
+        A product we believe is mediocre will not receive a positive review because it carries a
+        higher commission. A product we think is excellent will receive that recommendation whether
+        or not an affiliate link is available.
+      </p>
+      <p>
+        When we recommend a product that has an affiliate link, we disclose that relationship — in
+        our <a href="/en/about/">About</a> page, in the footer of every page, and prominently on
+        this disclosure page. We believe you deserve to know who benefits from your purchasing
+        decisions.
+      </p>
+
+      <h2>What This Means for You</h2>
+      <p>
+        Using our affiliate links is entirely optional. If you prefer, you can search for any
+        product we review directly on Amazon or another retailer. Our reviews contain enough
+        specifics (model names, product details) to find what you're looking for without using our
+        links.
+      </p>
+      <p>
+        If you do use our links, you're supporting independent product research at no extra cost to
+        you. We appreciate it — it's what keeps this site going.
+      </p>
+
+      <h2>FTC Compliance</h2>
+      <p>
+        This disclosure is made in accordance with the Federal Trade Commission's guidelines on
+        endorsements and testimonials (16 CFR Part 255). The FTC requires that any material
+        connection between an endorser and a brand — including financial compensation — be clearly
+        disclosed to consumers. Our affiliate relationships constitute such a connection, and we
+        disclose them accordingly.
+      </p>
+      <p>
+        Questions about our affiliate practices? Contact us at{' '}
+        <a href="mailto:hello@tsa.monster">hello@tsa.monster</a>.
+      </p>
+    </article>
+  </main>
+</BaseLayout>

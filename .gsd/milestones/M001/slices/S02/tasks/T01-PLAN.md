@@ -63,6 +63,17 @@ pnpm astro check
 - `src/components/Footer.astro` — **read-only reference**: Footer hardcodes hrefs `/en/privacy-policy/`, `/en/affiliate-disclosure/`, `/en/about/`, `/en/contact/`. File slugs must match exactly.
 - `src/styles/global.css` — **do not modify**. Custom Tailwind tokens available: `text-ink`, `text-ink-muted`, `bg-surface`, `bg-brand-light`, `border-brand`, `text-brand`, `font-display`, `font-sans`. Tailwind Typography (`prose prose-slate`) is installed via `@plugin "@tailwindcss/typography"`.
 
+## Observability Impact
+
+These are static pages with no runtime server component. Observability is entirely build-time and filesystem-based:
+
+- **Build success signal:** `pnpm build` exits 0 and all four `dist/en/{slug}/index.html` files exist.
+- **Type-check signal:** `pnpm astro check` reports `0 errors, 0 warnings, 0 hints`.
+- **Component render confirmation:** `grep -i 'As an Amazon Associate' dist/en/affiliate-disclosure/index.html` returns a match — confirms `AffiliateDisclosure` component was rendered into the page, not silently dropped.
+- **Slug integrity:** `grep -r 'href=.*en/' src/components/Footer.astro` shows expected hrefs; matching pages must exist at those paths.
+- **Failure state:** If a page is missing from `dist/`, the build still exits 0 (Astro won't error on omitted static pages) — the `ls` checks are the authoritative signal, not exit code alone.
+- **No secrets, no credentials** — all pages are public static prose. No redaction needed.
+
 ## Expected Output
 
 - `src/pages/en/about.astro` — created, renders About page

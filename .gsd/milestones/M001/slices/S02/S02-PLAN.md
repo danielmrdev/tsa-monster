@@ -20,6 +20,10 @@ ls dist/en/privacy-policy/index.html
 ls dist/en/affiliate-disclosure/index.html
 ls dist/en/contact/index.html
 pnpm astro check   # 0 errors, 0 warnings, 0 hints
+# Diagnostic: confirm no placeholder text leaked into dist
+grep -r 'lorem ipsum\|TODO\|placeholder' dist/en/ || echo "clean"
+# Diagnostic: confirm AffiliateDisclosure component rendered
+grep -i 'As an Amazon Associate' dist/en/affiliate-disclosure/index.html | wc -l   # must be >= 1
 
 # After T02 — home page
 pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]'   # zero output
@@ -31,7 +35,7 @@ pnpm astro check   # still 0 errors
 
 ## Tasks
 
-- [ ] **T01: Write four static pages (About, Privacy Policy, Affiliate Disclosure, Contact)** `est:45m`
+- [x] **T01: Write four static pages (About, Privacy Policy, Affiliate Disclosure, Contact)** `est:45m`
   - Why: R003 requires these pages to exist with real content before Amazon Associates application. Footer.astro already hardcodes their hrefs — the files must exist at the matching slugs.
   - Files: `src/pages/en/about.astro`, `src/pages/en/privacy-policy.astro`, `src/pages/en/affiliate-disclosure.astro`, `src/pages/en/contact.astro`
   - Do: Create each file extending BaseLayout with unique `title` + `description` props. Real prose content — not lorem ipsum. About: editorial mission + review methodology. Privacy Policy: data collection, cookies, Amazon Associates relationship, analytics. Affiliate Disclosure: FTC-compliant text + embed the `AffiliateDisclosure` component prominently. Contact: editorial address, review request note, no server-side form. Import paths from `src/pages/en/` are two levels up: `'../../layouts/BaseLayout.astro'`, `'../../components/AffiliateDisclosure.astro'`.
@@ -52,3 +56,21 @@ pnpm astro check   # still 0 errors
 - `src/pages/en/affiliate-disclosure.astro` — create
 - `src/pages/en/contact.astro` — create
 - `src/pages/en/index.astro` — rewrite
+
+## Observability / Diagnostics
+
+**Build output inspection:**
+- `pnpm build` writes to `dist/`. All built pages land at `dist/en/{slug}/index.html`. Check existence with `ls`.
+- Build errors surface as `[ERROR]` lines in stdout/stderr. Filter: `pnpm build 2>&1 | grep -E '\[ERROR\]|\[warn\]'`
+- Type errors surface via `pnpm astro check` — reports `N errors, N warnings, N hints` summary line.
+
+**Failure visibility:**
+- 404 on footer links → slug mismatch between `Footer.astro` hrefs and actual page filenames. Grep: `grep -r 'href=.*en/' src/components/Footer.astro` to confirm expected hrefs.
+- Missing AffiliateDisclosure component on disclosure page → `grep -i 'Disclosure' dist/en/affiliate-disclosure/index.html` returns no match.
+- Build fails with `Cannot find module` → import path wrong (must be `../../layouts/BaseLayout.astro` from `src/pages/en/`).
+
+**Runtime inspection:**
+- Serve locally: `pnpm preview` then browse `/en/about/`, `/en/privacy-policy/`, etc. to confirm rendered output.
+- Verify no leaked placeholder text: `grep -r 'lorem ipsum\|TODO\|placeholder' dist/en/` should return empty.
+
+**Redaction:** No secrets or credentials involved — these are static public pages. No redaction needed.

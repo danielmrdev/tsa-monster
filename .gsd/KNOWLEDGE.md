@@ -70,6 +70,13 @@ export default defineConfig({
 **Fix:** Derive the slug from `entry.id`: `entry.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? entry.id`. This strips the file extension and extracts the filename. Works for both `.md` and `.mdx`.  
 **Rule:** In any Astro 6 `getStaticPaths()` using `getCollection()` + glob loader, always use `entry.id` for slug derivation. Never reference `entry.slug`.
 
+## K009 — Astro page filename collides with component import name: ts(2440)
+
+**Discovered:** M001/S02/T01  
+**Context:** In `src/pages/en/affiliate-disclosure.astro`, importing a component named `AffiliateDisclosure` from `../../components/AffiliateDisclosure.astro` triggers `ts(2440): Import declaration conflicts with local declaration of 'AffiliateDisclosure'`. Astro's type generator creates a local type alias derived from the page filename (`affiliate-disclosure` → `AffiliateDisclosure`), which collides with the import identifier.  
+**Fix:** Rename the import alias to avoid the collision: `import AffiliateDisclosureBlock from '../../components/AffiliateDisclosure.astro'` and update the usage accordingly.  
+**Rule:** When an Astro page filename can be camelCased to match a component import name, rename the import alias. Watch for this pattern in disclosure/feature pages that import same-named components.
+
 ## K008 — Empty content collection with getStaticPaths() is not a build error in Astro 6
 
 **Discovered:** M001/S01/T03  

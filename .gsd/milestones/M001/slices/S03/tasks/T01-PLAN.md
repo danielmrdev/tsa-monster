@@ -105,6 +105,21 @@ pnpm astro check 2>&1 | tail -3
 - `src/layouts/BaseLayout.astro` — Props: `title`, `description`, `ogImage?`, `lang?`
 - `src/pages/en/index.astro` — reference implementation of `getCollection` + slug derivation + ArticleCard rendering pattern
 
+## Observability Impact
+
+**Signals this task introduces:**
+- `dist/en/kitchen/index.html`, `dist/en/outdoor/index.html`, `dist/en/home/index.html`, `dist/en/beauty/index.html` — built output for all 4 category listing pages; confirms nav dead-links are resolved
+- `public/images/*.jpg` — 15 image files; `find public/images -name "*.jpg" -size -10k` detects failed downloads
+
+**Inspection:**
+- `grep "Reviews coming soon" dist/en/kitchen/index.html` — confirms empty-state is shown (before articles are written)
+- `ls -la public/images/*.jpg` — file sizes; anything <10KB is a failed download (HTML error page)
+
+**Failure visibility:**
+- Build `[ERROR]` lines pinpoint any import or type issue in the new page
+- Tiny JPEGs (<10KB) = Unsplash returned an error response; re-download with a different photo ID
+- If any `dist/en/[category]/index.html` is missing after build, check `getStaticPaths()` returns all 4 category params
+
 ## Expected Output
 
 - `src/pages/en/[category]/index.astro` — new file, category listing page

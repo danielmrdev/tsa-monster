@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+
+export async function getStaticPaths() {
+  return [
+    { params: { category: 'kitchen' } },
+    { params: { category: 'outdoor' } },
+    { params: { category: 'home' } },
+    { params: { category: 'beauty' } },
+  ];
+}
+
+const { category } = Astro.params;
+
+const categoryMeta: Record<string, { label: string; description: string; icon: string }> = {
+  kitchen: {
+    label: 'Kitchen',
+    description: 'Hands-on reviews of coffee makers, air fryers, knives, and kitchen appliances worth your counter space.',
+    icon: '🍳',
+  },
+  outdoor: {
+    label: 'Outdoor',
+    description: 'Gear reviews for hikers, campers, and adventurers — backpacks, tents, headlamps, and water filters tested in the field.',
+    icon: '🏕️',
+  },
+  home: {
+    label: 'Home',
+    description: 'Honest reviews of robot vacuums, air purifiers, smart plugs, and home tech that actually makes life easier.',
+    icon: '🏠',
+  },
+  beauty: {
+    label: 'Beauty',
+    description: 'Independent reviews of electric toothbrushes, face serums, hair dryers, and wellness products tested over time.',
+    icon: '✨',
+  },
+};
+
+const meta = categoryMeta[category] ?? {
+  label: category.charAt(0).toUpperCase() + category.slice(1),
+  description: `Independent reviews in the ${category} category.`,
+  icon: '📋',
+};
+
+const allReviews = await getCollection('reviews');
+const articles = allReviews
+  .filter(entry => entry.data.category === category)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout
+  title={`${meta.label} Reviews — TSA Monster`}
+  description={meta.description}
+>
+  <!-- ── Category Hero ─────────────────────────────────────────── -->
+  <section aria-label={`${meta.label} category`} class="bg-ink text-white py-16 px-4">
+    <div class="max-w-5xl mx-auto text-center">
+      <span class="text-5xl mb-4 block" aria-hidden="true">{meta.icon}</span>
+      <h1 class="font-display text-4xl sm:text-5xl text-white mb-4">
+        {meta.label} Reviews
+      </h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+        {meta.description}
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Article Grid ──────────────────────────────────────────── -->
+  <section aria-label={`${meta.label} articles`} class="bg-surface py-14 px-4">
+    <div class="max-w-5xl mx-auto">
+
+      {articles.length === 0 ? (
+        <div class="text-center py-20 border border-dashed border-slate-200 rounded-xl">
+          <p class="text-ink-muted text-base font-medium">
+            Reviews coming soon — we're still testing.
+          </p>
+          <p class="text-sm text-slate-400 mt-2">
+            We buy and test every product before writing it up. Check back shortly.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div class="flex items-baseline justify-between mb-8">
+            <p class="text-sm text-ink-muted">
+              {articles.length} {articles.length === 1 ? 'review' : 'reviews'}
+            </p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.map(entry => {
+              const slug = entry.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? entry.id;
+              return (
+                <ArticleCard
+                  title={entry.data.title}
+                  excerpt={entry.data.excerpt}
+                  category={entry.data.category}
+                  slug={slug}
+                  heroImage={entry.data.heroImage}
+                  date={entry.data.date}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
+
+    </div>
+  </section>
+</BaseLayout>

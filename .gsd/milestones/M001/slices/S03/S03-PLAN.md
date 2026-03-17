@@ -36,6 +36,39 @@ grep -c "<loc>" dist/sitemap-0.xml
 pnpm astro check 2>&1 | tail -3
 ```
 
+## Observability / Diagnostics
+
+**Runtime signals:**
+- `pnpm build 2>&1 | grep -E '\[ERROR\]'` — primary failure surface; zero lines = clean
+- `pnpm astro check 2>&1 | tail -3` — TypeScript type errors surfaced here
+- `find public/images -name "*.jpg" -size -10k` — detects failed image downloads (HTML error pages land as <1KB files)
+- `ls dist/en/kitchen/index.html dist/en/outdoor/index.html dist/en/home/index.html dist/en/beauty/index.html` — confirms all 4 category routes rendered
+- `grep -c "<loc>" dist/sitemap-0.xml` — confirms sitemap populated (expect ≥25 after all articles present)
+
+**Inspection surfaces:**
+- `dist/en/[category]/index.html` — render category listing page; grep for article titles to confirm collection filtering works
+- `dist/en/kitchen/best-coffee-makers/index.html` — spot-check article build output; grep for ProductCard CTA links
+- `pnpm build 2>&1 | grep -E 'warn|error|fail'` — surfaces schema validation warnings and MDX parse errors
+
+**Failure state:**
+- MDX frontmatter schema violations produce `[ERROR] Invalid content entry` with the file path — grep `[ERROR]` in build output
+- Missing heroImage file path doesn't fail build but produces broken img tags — inspect rendered HTML for empty `src`
+- A `<1KB .jpg` file in `public/images/` means curl downloaded an HTML error page — `find public/images -name "*.jpg" -size -10k` catches this
+
+**Redaction:** No secrets in this slice. Affiliate URLs are all `'#'` placeholders.
+
+**Diagnostic failure check:**
+```bash
+# Detect schema validation errors in build (must return 0)
+pnpm build 2>&1 | grep -c '\[ERROR\]'   # → 0
+
+# Detect failed image downloads (must return empty)
+find public/images -name "*.jpg" -size -10k
+
+# Inspect category listing page rendered output
+grep -o 'href="/en/kitchen/[^"]*"' dist/en/kitchen/index.html | head -10
+```
+
 ## Integration Closure
 
 - Upstream surfaces consumed: `src/content.config.ts` (schema contract), `src/pages/en/[category]/[slug].astro` (dynamic route), `src/layouts/ArticleLayout.astro` (prose wrapper + disclosure), `src/components/ProductCard.astro` (CTA component), `src/components/ArticleCard.astro` (category listing grid)
@@ -44,7 +77,7 @@ pnpm astro check 2>&1 | tail -3
 
 ## Tasks
 
-- [ ] **T01: Create category listing page and download hero images** `est:45m`
+- [x] **T01: Create category listing page and download hero images** `est:45m`
   - Why: The category listing page is the only missing structural piece — all 4 Header nav links (`/en/kitchen/`, etc.) currently 404. Hero images must be downloaded before MDX files reference them, so path typos surface before content writing begins.
   - Files: `src/pages/en/[category]/index.astro`, `public/images/` (15 image files)
   - Do: Create the category listing page with `getStaticPaths()` returning 4 category params, filter `getCollection('reviews')` by `entry.data.category`, sort by date descending, render ArticleCard grid via BaseLayout. Download 15 Unsplash images via curl (one per article). Naming convention: `/images/[category]-[slug-prefix].jpg`.

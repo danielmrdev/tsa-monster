@@ -10,7 +10,7 @@ A real, professional-looking review site that passes Amazon's manual Associates 
 
 ## Current State
 
-**S01 complete.** Astro 6 project scaffolded and fully verified. `pnpm build` exits 0 — 2 pages built (`/en/`, `/`), sitemap generated, TypeScript clean (14 files, 0 errors). All shared layouts and components in place. Dynamic article route ready for S03 content. Public files in place.
+**S02 complete.** Five pages built and verified: About, Privacy Policy, Affiliate Disclosure, Contact, and a fully-designed home page (hero + category grid + recent articles + trust bar). `pnpm build` exits 0 — all five pages in `dist/en/`. AffiliateDisclosure component rendering confirmed. TypeScript clean (18 files, 0 errors, 0 warnings, 0 hints). R003 and R004 validated.
 
 ## Architecture / Key Patterns
 
@@ -44,7 +44,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 ## Milestone Sequence
 
 - [x] S01: Astro scaffold + i18n foundation — **complete**
-- [ ] S02: Static pages + home (About, Privacy Policy, Affiliate Disclosure, Contact, Home content)
+- [x] S02: Static pages + home (About, Privacy Policy, Affiliate Disclosure, Contact, Home content) — **complete**
 - [ ] S03: 15 review articles + images
 - [ ] S04: Build + deploy (VPS, Caddy, Cloudflare)
 - [ ] M001: Launch — Build and deploy tsa.monster, ready for Amazon Associates US application

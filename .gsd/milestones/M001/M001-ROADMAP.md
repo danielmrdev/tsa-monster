@@ -53,7 +53,7 @@ This milestone is complete only when all are true:
 - [x] **S01: Astro scaffold + i18n foundation** `risk:high` `depends:[]`
   > After this: `pnpm dev` runs, `/en/` and the redirect at `/` work, Tailwind styles render, content collections schema is defined, SEO components exist.
 
-- [ ] **S02: Static pages + home** `risk:low` `depends:[S01]`
+- [x] **S02: Static pages + home** `risk:low` `depends:[S01]`
   > After this: Home page, About, Privacy Policy, Affiliate Disclosure, and Contact are all browsable with real content and correct layout.
 
 - [ ] **S03: 15 review articles + images** `risk:medium` `depends:[S01]`

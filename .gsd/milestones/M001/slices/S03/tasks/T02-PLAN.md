@@ -239,6 +239,31 @@ ls dist/en/kitchen/best-blenders/index.html
 grep -c "Read more" dist/en/kitchen/index.html   # → 5
 ```
 
+## Observability Impact
+
+**Signals this task introduces:**
+- `dist/en/kitchen/best-*/index.html` — 5 new routes built from MDX; existence confirms schema + build pipeline are healthy
+- `grep -c "Check on Amazon" dist/en/kitchen/best-coffee-makers/index.html` — confirms ProductCard components rendered (expect ≥4); 0 means import path wrong or MDX parse error
+- `grep "affiliateUrl" dist/en/kitchen/best-coffee-makers/index.html` — should return empty (affiliateUrl is a prop, not rendered to DOM); non-empty signals unexpected leakage
+
+**Inspecting failure state:**
+- Schema validation errors appear as `[ERROR] Invalid content entry "kitchen/best-*.mdx"` in build output — grep `\[ERROR\]` to detect; file path in the error identifies which article is malformed
+- MDX import path errors appear as `[ERROR] Cannot find module '../../../components/ProductCard.astro'` — occurs when relative path is wrong; check against `src/content/reviews/kitchen/` nesting depth (3 levels)
+- Wrong `category` enum value produces `[ERROR] Expected 'kitchen' | 'outdoor' | 'home' | 'beauty'` in build output
+- `description` or `excerpt` exceeding character limits are not schema-enforced — they fail silently; verify manually with `awk 'length>160' <(yq .description ...)`
+
+**Stable diagnostic commands:**
+```bash
+# Count ProductCard renders in a built article (expect ≥3)
+grep -c "Check on Amazon" dist/en/kitchen/best-coffee-makers/index.html
+
+# Confirm all article links appear in category index
+grep -o 'href="/en/kitchen/[^"]*"' dist/en/kitchen/index.html
+
+# Confirm no [ERROR] lines in build
+pnpm build 2>&1 | grep '\[ERROR\]'
+```
+
 ## Inputs
 
 - `src/content.config.ts` — schema contract (do not modify)

@@ -18,8 +18,12 @@
 # Full build — must exit 0
 pnpm build 2>&1 | tail -5
 
-# Zero errors
+# Zero errors — if non-zero, inspect: pnpm build 2>&1 | grep '\[ERROR\]' for file path and error type
 pnpm build 2>&1 | grep -E '\[ERROR\]' | wc -l   # → 0
+
+# Failure-path check: schema errors surface as [ERROR] Invalid content entry; missing images render as broken <img src="">
+# Run this to isolate any schema validation failures before checking route existence:
+pnpm build 2>&1 | grep '\[ERROR\]'   # must return empty
 
 # Category index pages exist (nav links not 404)
 ls dist/en/kitchen/index.html dist/en/outdoor/index.html dist/en/home/index.html dist/en/beauty/index.html
@@ -84,7 +88,7 @@ grep -o 'href="/en/kitchen/[^"]*"' dist/en/kitchen/index.html | head -10
   - Verify: `pnpm build` exits 0; `ls dist/en/kitchen/index.html dist/en/outdoor/index.html dist/en/home/index.html dist/en/beauty/index.html` — all present; `ls public/images/*.jpg | wc -l` → 15
   - Done when: Category listing page builds without error, 4 `dist/en/[category]/index.html` files exist, 15 images present in `public/images/`
 
-- [ ] **T02: Write 5 Kitchen review articles** `est:1h30m`
+- [x] **T02: Write 5 Kitchen review articles** `est:1h30m`
   - Why: Kitchen is the largest category (5 articles) and the one most visible from the home page hero CTA. Writing these first lets us validate the full article pipeline (frontmatter schema → MDX → ArticleLayout → ProductCard) before writing the remaining 10.
   - Files: `src/content/reviews/kitchen/best-coffee-makers.mdx`, `src/content/reviews/kitchen/best-air-fryers.mdx`, `src/content/reviews/kitchen/best-chef-knives.mdx`, `src/content/reviews/kitchen/best-stand-mixers.mdx`, `src/content/reviews/kitchen/best-blenders.mdx`
   - Do: Write all 5 MDX files. Each must satisfy the schema (valid frontmatter + `heroImage` referencing a file from T01), import `ProductCard` with correct relative path (`'../../../components/ProductCard.astro'` — 3 levels up), include intro, comparison table, ≥3 ProductCard entries, FAQ section, Final Verdict. All `affiliateUrl` values are `'#'`. `rating` values between 1 and 5.
